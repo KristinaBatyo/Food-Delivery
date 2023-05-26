@@ -44,7 +44,7 @@ const handleAddToCart = (product, shop, price) => {
         <StyledNavLink to="/" end>
           ShopsPage
         </StyledNavLink>
-        <StyledNavLink to="/cart">Cart</StyledNavLink>
+        {/* <StyledNavLink to="/cart">Cart</StyledNavLink> */}
       </Nav>
       <Routes>
         <Route
