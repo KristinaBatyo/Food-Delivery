@@ -70,20 +70,23 @@ const CartPage = ({ cartItems, setCartItems }) => {
     });
   };
 
-  const handleSubtractQuantity = (item, shop) => {
-    setCartItems((prevCartItems) => {
-      const updatedItems = { ...prevCartItems };
-      const shopItems = updatedItems[shop];
-      const updatedShopItems = shopItems.map((cartItem) => {
-        if (cartItem.name === item.name) {
-          return { ...cartItem, quantity: cartItem.quantity - 1 };
-        }
-        return cartItem;
-      });
-      updatedItems[shop] = updatedShopItems;
-      return updatedItems;
+const handleSubtractQuantity = (item, shop) => {
+  setCartItems((prevCartItems) => {
+    const updatedItems = { ...prevCartItems };
+    const shopItems = updatedItems[shop];
+    const updatedShopItems = shopItems.map((cartItem) => {
+      if (cartItem.name === item.name) {
+        const newQuantity = cartItem.quantity - 1;
+        // Перевірка, щоб кількість не стала менше 0
+        const quantity = newQuantity >= 0 ? newQuantity : 0;
+        return { ...cartItem, quantity: quantity };
+      }
+      return cartItem;
     });
-  };
+    updatedItems[shop] = updatedShopItems;
+    return updatedItems;
+  });
+};
 
   const handleSubmitOrder = async () => {
     const orderData = {
