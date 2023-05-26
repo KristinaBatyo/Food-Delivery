@@ -52,7 +52,7 @@ const handleAddToCart = (product, shop, price) => {
           element={<ShopsPage handleAddToCart={handleAddToCart} />}
         />
           <Route
-            path="cart"
+            path="/cart"
             element={
               <CartPage cartItems={cartItems} setCartItems={setCartItems} />
             }
