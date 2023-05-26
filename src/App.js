@@ -44,20 +44,19 @@ const handleAddToCart = (product, shop, price) => {
         <StyledNavLink to="/" end>
           ShopsPage
         </StyledNavLink>
-        {/* <StyledNavLink to="/cart">Cart</StyledNavLink> */}
+        <StyledNavLink to="/cart">Cart</StyledNavLink>
       </Nav>
       <Routes>
         <Route
           path="/"
           element={<ShopsPage handleAddToCart={handleAddToCart} />}
-        >
+        />
           <Route
             path="cart"
             element={
               <CartPage cartItems={cartItems} setCartItems={setCartItems} />
             }
           />
-        </Route>
       </Routes>
     </Container>
   );
