@@ -19,6 +19,7 @@ import {
   Title,
 } from "../styles/CardPage.styled";
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyBMYhG6guU7L4-T8R95Z4vWRfj25G72Guo",
   authDomain: "my-project-8492-1684659473943.firebaseapp.com",
