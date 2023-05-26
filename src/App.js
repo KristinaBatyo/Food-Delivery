@@ -50,14 +50,13 @@ const handleAddToCart = (product, shop, price) => {
         <Route
           path="/"
           element={<ShopsPage handleAddToCart={handleAddToCart} />}
-        >
+        />
           <Route
             path="/cart"
             element={
               <CartPage cartItems={cartItems} setCartItems={setCartItems} />
             }
           />
-        </Route>
       </Routes>
     </Container>
   );
