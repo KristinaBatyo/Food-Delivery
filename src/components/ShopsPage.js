@@ -136,7 +136,7 @@ const ShopsPage = ({ handleAddToCart }) => {
               <AddToCartButton
                 onClick={() => {
                   handleAddToCart(
-                    { id: 6, name: "Roll with salmon" },
+                    { id: 6, name: "Roll with salmon", price: 18 },
                     selectedShop,
                     18
                   );
