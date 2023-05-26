@@ -41,7 +41,7 @@ const handleAddToCart = (product, shop, price) => {
   return (
     <Container>
       <Nav>
-        <StyledNavLink to="/" end>
+        <StyledNavLink to="/">
           ShopsPage
         </StyledNavLink>
         <StyledNavLink to="/cart">Cart</StyledNavLink>
