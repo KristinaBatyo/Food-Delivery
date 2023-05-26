@@ -77,16 +77,19 @@ const handleSubtractQuantity = (item, shop) => {
     const updatedShopItems = shopItems.map((cartItem) => {
       if (cartItem.name === item.name) {
         const newQuantity = cartItem.quantity - 1;
-        // Перевірка, щоб кількість не стала менше 0
         const quantity = newQuantity >= 0 ? newQuantity : 0;
+        if (quantity === 0) {
+          return null;
+        }
         return { ...cartItem, quantity: quantity };
       }
       return cartItem;
     });
-    updatedItems[shop] = updatedShopItems;
+    updatedItems[shop] = updatedShopItems.filter(Boolean); 
     return updatedItems;
   });
 };
+
 
   const handleSubmitOrder = async () => {
     const orderData = {
