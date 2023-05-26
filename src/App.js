@@ -32,6 +32,7 @@ const handleAddToCart = (product, shop, price) => {
     return updatedItems;
   });
 
+  
   localStorage.setItem("cartItems", JSON.stringify(cartItems));
 };
 
