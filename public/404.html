@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    const path = window.location.pathname;
+    const basePath = '/Food-Delivery'; // Шлях до вашого додатку на GitHub Pages
+
+    if (path !== basePath && !path.startsWith(`${basePath}/`)) {
+      window.location.href = `${basePath}/`;
+    }
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>
