@@ -13,9 +13,26 @@ import {
   ProductPrice,
 } from "../styles/ShopsPage.styled";
 
-const ShopsPage = ({ handleAddToCart }) => {
-  const [selectedShop, setSelectedShop] = useState(null);
-  const [message, setMessage] = useState("");
+const ShopsPage = ({
+  handleAddToCart,
+  selectedShop,
+  setSelectedShop,
+  cartItems,
+}) => {
+  const [message, setMessage] = useState(null);
+
+  const handleAddToCartWithValidation = (product, shop, price) => {
+    const itemsFromOtherShop = Object.keys(cartItems).filter(
+      (cartShop) => cartShop !== shop
+    );
+
+    if (itemsFromOtherShop.length > 0) {
+      alert("You can only order products from one shop");
+    } else {
+      handleAddToCart(product, shop, price);
+      showMessage(product.name);
+    }
+  };
 
   const handleShopSelect = (shop) => {
     setSelectedShop(shop);
@@ -40,7 +57,7 @@ const ShopsPage = ({ handleAddToCart }) => {
 
               <AddToCartButton
                 onClick={() => {
-                  handleAddToCart(
+                  handleAddToCartWithValidation(
                     { id: 1, name: "Burgers", price: 10 },
                     selectedShop,
                     10
@@ -57,7 +74,7 @@ const ShopsPage = ({ handleAddToCart }) => {
 
               <AddToCartButton
                 onClick={() => {
-                  handleAddToCart(
+                  handleAddToCartWithValidation(
                     { id: 2, name: "Chicken & Fish Sandwiches", price: 15 },
                     selectedShop,
                     15
@@ -79,7 +96,7 @@ const ShopsPage = ({ handleAddToCart }) => {
 
               <AddToCartButton
                 onClick={() => {
-                  handleAddToCart(
+                  handleAddToCartWithValidation(
                     { id: 3, name: "Ice", price: 5 },
                     selectedShop,
                     5
@@ -96,7 +113,7 @@ const ShopsPage = ({ handleAddToCart }) => {
 
               <AddToCartButton
                 onClick={() => {
-                  handleAddToCart(
+                  handleAddToCartWithValidation(
                     { id: 4, name: "Dessert", price: 15 },
                     selectedShop,
                     15
@@ -118,7 +135,7 @@ const ShopsPage = ({ handleAddToCart }) => {
 
               <AddToCartButton
                 onClick={() => {
-                  handleAddToCart(
+                  handleAddToCartWithValidation(
                     { id: 5, name: "Ramen with smoked chicken", price: 18 },
                     selectedShop,
                     18
@@ -135,7 +152,7 @@ const ShopsPage = ({ handleAddToCart }) => {
 
               <AddToCartButton
                 onClick={() => {
-                  handleAddToCart(
+                  handleAddToCartWithValidation(
                     { id: 6, name: "Roll with salmon", price: 18 },
                     selectedShop,
                     18

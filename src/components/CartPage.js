@@ -69,6 +69,7 @@ const CartPage = ({ cartItems, setCartItems }) => {
       return updatedItems;
     });
   };
+  
 
 const handleSubtractQuantity = (item, shop) => {
   setCartItems((prevCartItems) => {
@@ -98,6 +99,12 @@ const handleSubtractQuantity = (item, shop) => {
       phone,
       address,
     };
+
+        const shops = Object.keys(cartItems);
+        if (shops.length > 1) {
+          alert("You can only order products from one shop");
+          return;
+        }
 
     try {
       const docRef = await addDoc(collection(db, "orders"), orderData);

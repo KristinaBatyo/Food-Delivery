@@ -5,10 +5,12 @@ import CartPage from "./components/CartPage";
 import { Nav, Container, StyledNavLink } from "./styles/App.styled";
 
 const App = () => {
-  const [cartItems, setCartItems] = useState(() => {
-    const storedCartItems = localStorage.getItem("cartItems");
-    return storedCartItems ? JSON.parse(storedCartItems) : {};
-  });
+    const [selectedShop, setSelectedShop] = useState(null);
+const [cartItems, setCartItems] = useState(() => {
+  const storedCartItems = localStorage.getItem("cartItems");
+  return storedCartItems ? JSON.parse(storedCartItems) : {};
+});
+
 
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
@@ -17,24 +19,23 @@ const App = () => {
 const handleAddToCart = (product, shop, price) => {
   setCartItems((prevCartItems) => {
     const updatedItems = { ...prevCartItems };
-    if (updatedItems[shop]) {
-      const itemExists = updatedItems[shop].find(
-        (item) => item.id === product.id
-      );
-      if (itemExists) {
-        itemExists.quantity += 1;
+    if (updatedItems.hasOwnProperty(shop)) {
+      const shopItems = updatedItems[shop];
+      const existingItem = shopItems.find((item) => item.id === product.id);
+      if (existingItem) {
+        existingItem.quantity += 1;
       } else {
-        updatedItems[shop].push({ ...product, quantity: 1, price });
+        const newItem = { ...product, quantity: 1, price };
+        shopItems.push(newItem);
       }
     } else {
-      updatedItems[shop] = [{ ...product, quantity: 1, price }];
+      const newItem = { ...product, quantity: 1, price };
+      updatedItems[shop] = [newItem];
     }
     return updatedItems;
   });
-
-  
-  localStorage.setItem("cartItems", JSON.stringify(cartItems));
 };
+
 
 
 
@@ -50,14 +51,21 @@ const handleAddToCart = (product, shop, price) => {
       <Routes>
         <Route
           path="/"
-          element={<ShopsPage handleAddToCart={handleAddToCart} />}
+          element={
+            <ShopsPage
+              selectedShop={selectedShop}
+              handleAddToCart={handleAddToCart}
+              setSelectedShop={setSelectedShop}
+              cartItems={cartItems}
+            />
+          }
         />
-          <Route
-            path="/cart"
-            element={
-              <CartPage cartItems={cartItems} setCartItems={setCartItems} />
-            }
-          />
+        <Route
+          path="/cart"
+          element={
+            <CartPage cartItems={cartItems} setCartItems={setCartItems} />
+          }
+        />
       </Routes>
     </Container>
   );
