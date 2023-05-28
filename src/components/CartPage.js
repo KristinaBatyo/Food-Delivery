@@ -92,33 +92,44 @@ const handleSubtractQuantity = (item, shop) => {
 };
 
 
-  const handleSubmitOrder = async () => {
-    const orderData = {
-      items: cartItems,
-      email,
-      phone,
-      address,
-    };
-
-        const shops = Object.keys(cartItems);
-        if (shops.length > 1) {
-          alert("You can only order products from one shop");
-          return;
-        }
-
-    try {
-      const docRef = await addDoc(collection(db, "orders"), orderData);
-      console.log("Order saved with ID:", docRef.id);
-      alert("Order submitted");
-      setCartItems({});
-      setEmail("");
-      setPhone("");
-      setAddress("");
-    } catch (error) {
-      console.error("Error submitting order:", error);
-      alert("Error submitting order");
-    }
+const handleSubmitOrder = async () => {
+  const orderData = {
+    items: cartItems,
+    email,
+    phone,
+    address,
   };
+
+  const shops = Object.keys(cartItems);
+  if (shops.length > 1) {
+    alert("You can only order products from one shop");
+    return;
+  }
+
+  if (Object.keys(cartItems).length === 0) {
+    alert("Cart is empty");
+    return;
+  }
+
+  if (!email || !phone || !address) {
+    alert("Please fill in all the registration fields");
+    return;
+  }
+
+  try {
+    const docRef = await addDoc(collection(db, "orders"), orderData);
+    console.log("Order saved with ID:", docRef.id);
+    alert("Order submitted");
+    setCartItems({});
+    setEmail("");
+    setPhone("");
+    setAddress("");
+  } catch (error) {
+    console.error("Error submitting order:", error);
+    alert("Error submitting order");
+  }
+};
+
 
 const calculateTotalPrice = () => {
   let totalPrice = 0;
