@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
 import {
   Text,
   OrderHeading,
@@ -18,42 +16,28 @@ import {
   QuantityButton,
   Title,
 } from "../styles/CardPage.styled";
-
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBMYhG6guU7L4-T8R95Z4vWRfj25G72Guo",
-  authDomain: "my-project-8492-1684659473943.firebaseapp.com",
-  projectId: "my-project-8492-1684659473943",
-  storageBucket: "my-project-8492-1684659473943.appspot.com",
-  messagingSenderId: "319870936933",
-  appId: "1:319870936933:web:b77547d18570db5f8f638c",
-  measurementId: "G-7MQHE06E0D",
-};
-
-
-initializeApp(firebaseConfig);
-const db = getFirestore();
+import axios from "axios";
 
 const CartPage = ({ cartItems, setCartItems }) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
 
-  const handleRemoveFromCart = (item, shop) => {
-    setCartItems((prevCartItems) => {
-      const updatedItems = { ...prevCartItems };
-      const shopItems = updatedItems[shop];
-      const updatedShopItems = shopItems.filter(
-        (cartItem) => cartItem.name !== item.name
-      );
-      if (updatedShopItems.length === 0) {
-        delete updatedItems[shop];
-      } else {
-        updatedItems[shop] = updatedShopItems;
-      }
-      return updatedItems;
-    });
-  };
+const handleRemoveFromCart = (item, shop) => {
+  setCartItems((prevCartItems) => {
+    const updatedItems = { ...prevCartItems };
+    const shopItems = updatedItems[shop];
+    const updatedShopItems = shopItems.filter(
+      (cartItem) => cartItem.name !== item.name
+    );
+    if (updatedShopItems.length === 0) {
+      delete updatedItems[shop];
+    } else {
+      updatedItems[shop] = updatedShopItems;
+    }
+    return updatedItems;
+  });
+};
 
   const handleAddQuantity = (item, shop) => {
     setCartItems((prevCartItems) => {
@@ -69,28 +53,26 @@ const CartPage = ({ cartItems, setCartItems }) => {
       return updatedItems;
     });
   };
-  
 
-const handleSubtractQuantity = (item, shop) => {
-  setCartItems((prevCartItems) => {
-    const updatedItems = { ...prevCartItems };
-    const shopItems = updatedItems[shop];
-    const updatedShopItems = shopItems.map((cartItem) => {
-      if (cartItem.name === item.name) {
-        const newQuantity = cartItem.quantity - 1;
-        const quantity = newQuantity >= 0 ? newQuantity : 0;
-        if (quantity === 0) {
-          return null;
+  const handleSubtractQuantity = (item, shop) => {
+    setCartItems((prevCartItems) => {
+      const updatedItems = { ...prevCartItems };
+      const shopItems = updatedItems[shop];
+      const updatedShopItems = shopItems.map((cartItem) => {
+        if (cartItem.name === item.name) {
+          const newQuantity = cartItem.quantity - 1;
+          const quantity = newQuantity >= 0 ? newQuantity : 0;
+          if (quantity === 0) {
+            return null;
+          }
+          return { ...cartItem, quantity: quantity };
         }
-        return { ...cartItem, quantity: quantity };
-      }
-      return cartItem;
+        return cartItem;
+      });
+      updatedItems[shop] = updatedShopItems.filter(Boolean);
+      return updatedItems;
     });
-    updatedItems[shop] = updatedShopItems.filter(Boolean); 
-    return updatedItems;
-  });
-};
-
+  };
 
 const handleSubmitOrder = async () => {
   const orderData = {
@@ -117,8 +99,7 @@ const handleSubmitOrder = async () => {
   }
 
   try {
-    const docRef = await addDoc(collection(db, "orders"), orderData);
-    console.log("Order saved with ID:", docRef.id);
+    await axios.post("http://localhost:8000/orders", orderData); // Використовуйте відповідний шлях до вашого серверного бекенду
     alert("Order submitted");
     setCartItems({});
     setEmail("");
@@ -126,11 +107,8 @@ const handleSubmitOrder = async () => {
     setAddress("");
   } catch (error) {
     console.error("Error submitting order:", error);
-    alert("Error submitting order");
   }
 };
-
-
 const calculateTotalPrice = () => {
   let totalPrice = 0;
 
@@ -149,77 +127,68 @@ const calculateTotalPrice = () => {
 };
 
   return (
-    <div>
-      <Title>Shopping Cart</Title>
+    <Container>
+      <Title>Cart</Title>
       {Object.keys(cartItems).length === 0 ? (
-        <Text>Cart is empty</Text>
+        <Text>Your cart is empty</Text>
       ) : (
-        <CartContainer>
+        <>
+          <OrderHeading>Order Details</OrderHeading>
           {Object.keys(cartItems).map((shop) => (
-            <div key={shop}>
+            <CartContainer key={shop}>
               <ShopName>{shop}</ShopName>
-              <ul>
-                {cartItems[shop].map((item) => (
-                  <CartItem key={item.id}>
-                    <ItemDetails>
-                      <ItemName>{item.name}</ItemName>
-                      <ItemQuantity>
-                        Quantity: {item.quantity}
-                        <QuantityButton
-                          onClick={() => handleAddQuantity(item, shop)}
-                        >
-                          +
-                        </QuantityButton>
-                        <QuantityButton
-                          onClick={() => handleSubtractQuantity(item, shop)}
-                        >
-                          -
-                        </QuantityButton>
-                      </ItemQuantity>
-                      <ItemPrice>Price: ${item.price}</ItemPrice>
-                    </ItemDetails>
-                    <RemoveButton
-                      onClick={() => handleRemoveFromCart(item, shop)}
-                    >
-                      Remove
-                    </RemoveButton>
-                  </CartItem>
-                ))}
-              </ul>
-            </div>
+              {cartItems[shop].map((item) => (
+                <CartItem key={item.name}>
+                  <ItemDetails>
+                    <ItemName>{item.name}</ItemName>
+                    <ItemQuantity>
+                      <QuantityButton
+                        onClick={() => handleSubtractQuantity(item, shop)}
+                      >
+                        -
+                      </QuantityButton>
+                      {item.quantity}
+                      <QuantityButton
+                        onClick={() => handleAddQuantity(item, shop)}
+                      >
+                        +
+                      </QuantityButton>
+                    </ItemQuantity>
+                    <ItemPrice>{item.price}</ItemPrice>
+                  </ItemDetails>
+                  <RemoveButton
+                    onClick={() => handleRemoveFromCart(item, shop)}
+                  >
+                    Remove
+                  </RemoveButton>
+                </CartItem>
+              ))}
+            </CartContainer>
           ))}
-        </CartContainer>
-      )}
-      <Container>
-        <OrderHeading>Order Details</OrderHeading>
-        <label>
-          Email:
+          <OrderHeading>Shipping Details</OrderHeading>
           <InputField
             type="email"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-        </label>
-        <label>
-          Phone Number:
           <InputField
             type="tel"
+            placeholder="Phone"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
-        </label>
-        <label>
-          Address:
           <InputField
             type="text"
+            placeholder="Address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
           />
-        </label>
-        <Button onClick={handleSubmitOrder}>Submit</Button>
-        <div>Загальна вартість: ${calculateTotalPrice()}</div>
-      </Container>
-    </div>
+          <Button onClick={handleSubmitOrder}>Submit Order</Button>
+          <div>Загальна вартість: ${calculateTotalPrice()}</div>
+        </>
+      )}
+    </Container>
   );
 };
 
