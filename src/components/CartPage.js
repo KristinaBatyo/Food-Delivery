@@ -99,7 +99,7 @@ const handleSubmitOrder = async () => {
   }
 
   try {
-    await axios.post("http://localhost:8000/orders", orderData); // Використовуйте відповідний шлях до вашого серверного бекенду
+    await axios.post("https://backend-ibh1.onrender.com/orders", orderData); // Використовуйте відповідний шлях до вашого серверного бекенду
     alert("Order submitted");
     setCartItems({});
     setEmail("");
